@@ -414,11 +414,6 @@ function togglePwVis(){
 }
 
 (function(){
-  if(sessionStorage.getItem('sl_auth')===_A){
-    // Already authenticated — hide overlay directly
-    document.getElementById('pw-overlay').style.display='none';
-    return;
-  }
   document.body.style.overflow='hidden';
   document.getElementById('pwInput').addEventListener('keydown',function(e){if(e.key==='Enter')checkPw();});
 })();
