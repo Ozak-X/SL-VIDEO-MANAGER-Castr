@@ -466,8 +466,10 @@ function checkName(){
   o.style.opacity='0';
   setTimeout(()=>{
     o.style.display='none';
+    o.style.pointerEvents='none';
     document.body.style.overflow='';
-    applyUser(name);
+    if(typeof applyUser === 'function') applyUser(name);
+    if(typeof initApp === 'function') initApp();
   },600);
 }
 
