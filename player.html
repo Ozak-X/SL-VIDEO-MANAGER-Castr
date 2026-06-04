@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
+  video, iframe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    border: none;
+  }
+  video { object-fit: contain; }
+  video.stretch { object-fit: fill; }
+</style>
+</head>
+<body>
+<script>
+  const p = new URLSearchParams(window.location.search);
+  const url          = p.get('url') || '';
+  const autoplay     = p.get('autoplay') === '1';
+  const loop         = p.get('loop') === '1';
+  const mute         = p.get('mute') === '1';
+  const hidecontrols = p.get('hidecontrols') === '1';
+  const stretch      = p.get('stretch') === '1';
+  const responsive   = p.get('responsive') === '1';
+
+  // Detect Castr
+  const isCastr = url.includes('castr.com') || url.includes('castr.io');
+
+  if (isCastr) {
+    // Use iframe for Castr player
+    const iframe = document.createElement('iframe');
+    // Build Castr URL with autoplay param if needed
+    let castrUrl = url;
+    if (url.includes('player.castr.com')) {
+      castrUrl = url + (url.includes('?') ? '&' : '?') + 'autoplay=' + (autoplay ? '1' : '0');
+      if (mute) castrUrl += '&muted=1';
+    }
+    iframe.src = castrUrl;
+    iframe.allow = 'autoplay; fullscreen';
+    iframe.allowFullscreen = true;
+    document.body.appendChild(iframe);
+
+  } else {
+    // Standard video player
+    let directUrl = url
+      .replace('www.dropbox.com', 'dl.dropboxusercontent.com')
+      .replace('?dl=0', '').replace('&dl=0', '');
+    if (directUrl.includes('dropbox') && !directUrl.includes('raw=1') && !directUrl.includes('dl=1'))
+      directUrl += (directUrl.includes('?') ? '&' : '?') + 'raw=1';
+
+    const video = document.createElement('video');
+    video.src = directUrl;
+    if (autoplay)      video.autoplay   = true;
+    if (loop)          video.loop       = true;
+    if (mute)          video.muted      = true;
+    if (!hidecontrols) video.controls   = true;
+    video.playsInline = true;
+    if (stretch)       video.className  = 'stretch';
+    document.body.appendChild(video);
+  }
+</script>
+</body>
+</html>
